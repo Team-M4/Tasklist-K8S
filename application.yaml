@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tasklist-App
+  name: tasklist-app
   namespace: argocd
 spec:
   project: default
-
   source:
     repoURL: https://github.com/Team-M4/Tasklist-K8S.git
     targetRevision: main
-    path: k8s
-
+    path: .
   destination:
     server: https://kubernetes.default.svc
     namespace: default
-
   syncPolicy:
     automated:
       prune: true
