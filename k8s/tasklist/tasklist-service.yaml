@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasklist-app
+  namespace: default
+  labels:
+    app: tasklist
+spec:
+  selector:
+    app: tasklist
+  ports:
+    - protocol: TCP
+      port: 8080        # The port other pods use to reach this service
+      targetPort: 8080  # The port the container exposes
+  type: ClusterIP       # Internal-only access; use NodePort/Ingress for external access
