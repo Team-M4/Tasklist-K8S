@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tasklist-app
+  name: app-deployment
 spec:
   replicas: 1
   selector:
@@ -16,6 +16,6 @@ spec:
         - name: ghcr-secret
       containers:
         - name: tasklist
-          image: ghcr.io/team-m4/tasklist-app:0bf57d898a51b285dc0f988410e7c5c2406510fc
+          image: ghcr.io/team-m4/tasklist-app:latest
           ports:
             - containerPort: 8080
