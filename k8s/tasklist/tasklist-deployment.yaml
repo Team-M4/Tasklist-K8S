@@ -23,16 +23,16 @@ spec:
             - containerPort: 8080
           env:
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres:5432/app_db
+              value: jdbc:postgresql://postgres:5432/tasklist_db
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
-                  key: username
+                  name: tasklist-db-secret
+                  key: DB_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
-                  key: password
+                  name: tasklist-db-secret
+                  key: DB_PASSWORD
       imagePullSecrets:
-        - name: ghcr-secret   # if your image is private
+        - name: ghcr-secret
