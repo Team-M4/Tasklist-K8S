@@ -8,7 +8,9 @@ spec:
   source:
     repoURL: https://github.com/Team-M4/Tasklist-K8S.git
     targetRevision: main
-    path: .
+    path: k8s
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: default
