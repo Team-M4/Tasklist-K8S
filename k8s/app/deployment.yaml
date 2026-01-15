@@ -25,4 +25,4 @@ spec:
             - name: DB_PASSWORD
               value: "admin"
             - name: DB_URL
-              value: "jdbc:postgresql://localhost:5432/tasklistdb"
+              value: "jdbc:postgresql://postgres:5432/tasklistdb"
