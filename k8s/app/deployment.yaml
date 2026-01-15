@@ -16,7 +16,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: tasklist
-          image: ghcr.io/team-m4/tasklist-app:latest
+          image: ghcr.io/team-m4/tasklist-app:0bf57d898a51b285dc0f988410e7c5c2406510fc
           ports:
             - containerPort: 8080
           env:
