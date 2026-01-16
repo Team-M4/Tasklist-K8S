@@ -31,4 +31,4 @@ spec:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
             - name: DB_URL
-              value: "jdbc:postgresql://postgres-service:5432/tasklistdb"
+              value: "jdbc:postgresql://postgres:5432/tasklistdb"
