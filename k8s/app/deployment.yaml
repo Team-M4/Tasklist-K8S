@@ -20,15 +20,18 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: DB_USER
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/tasklistdb
+          
+            - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_USER
-            - name: DB_PASSWORD
+          
+            - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
-            - name: DB_URL
-              value: "jdbc:postgresql://postgres:5432/tasklistdb"
+
