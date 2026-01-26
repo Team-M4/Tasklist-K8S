@@ -39,22 +39,47 @@ spec:
               secretKeyRef:
                 name: postgres-secret
                 key: POSTGRES_PASSWORD
+
+
           - name: JAVA_OPTS
             value: "-javaagent:/opt/appdynamics/javaagent.jar"
+
           - name: APPDYNAMICS_CONTROLLER_HOST_NAME
-            value: "lombard202601220244269.saas.appdynamics.com"
+            valueFrom:
+              secretKeyRef:
+                name: appdynamics-secret
+                key: controller-host
+
           - name: APPDYNAMICS_CONTROLLER_PORT
-            value: "443"
+            valueFrom:
+              secretKeyRef:
+                name: appdynamics-secret
+                key: controller-port
+
           - name: APPDYNAMICS_AGENT_ACCOUNT_NAME
-            value: "lombard202601220244269"
-          - name: APPDYNAMICS_AGENT_ACCESS_KEY
-            value: "d5apz8dbyuxs"
+            valueFrom:
+              secretKeyRef:
+                name: appdynamics-secret
+                key: account-name
+
+          - name: APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: appdynamics-secret
+                key: account-access-key
+
           - name: APPDYNAMICS_AGENT_APPLICATION_NAME
             value: "TasklistApp"
+
           - name: APPDYNAMICS_AGENT_TIER_NAME
             value: "API"
+
           - name: APPDYNAMICS_AGENT_NODE_NAME
-            value: "app-node"
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+
+        
         volumeMounts:
           - name: appd-agent-vol
             mountPath: /opt/appdynamics
