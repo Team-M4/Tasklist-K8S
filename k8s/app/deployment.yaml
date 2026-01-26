@@ -15,23 +15,64 @@ spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - name: tasklist
-          image: ghcr.io/team-m4/tasklist-app:latest
-          ports:
-            - containerPort: 8080
-          env:
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres:5432/tasklistdb
-          
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_USER
-          
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_PASSWORD
+      - name: tasklist
+        image: ghcr.io/team-m4/tasklist-app:latest
+        ports:
+          - containerPort: 8080
+        resources: 
+          requests: 
+            cpu: "250m" 
+            memory: "512Mi" 
+          limits: 
+            cpu: "500m" 
+            memory: "1Gi"
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:postgresql://postgres:5432/tasklistdb
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_USER
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_PASSWORD
+          - name: JAVA_OPTS
+            value: "-javaagent:/opt/appdynamics/javaagent.jar"
+          - name: APPDYNAMICS_CONTROLLER_HOST_NAME
+            value: "lombard202601220244269.saas.appdynamics.com"
+          - name: APPDYNAMICS_CONTROLLER_PORT
+            value: "443"
+          - name: APPDYNAMICS_AGENT_ACCOUNT_NAME
+            value: "lombard202601220244269"
+          - name: APPDYNAMICS_AGENT_ACCESS_KEY
+            value: "d5apz8dbyuxs"
+          - name: APPDYNAMICS_AGENT_APPLICATION_NAME
+            value: "TasklistApp"
+          - name: APPDYNAMICS_AGENT_TIER_NAME
+            value: "API"
+          - name: APPDYNAMICS_AGENT_NODE_NAME
+            value: "app-node"
+        volumeMounts:
+          - name: appd-agent-vol
+            mountPath: /opt/appdynamics
+
+      - name: appd-agent
+        image: appdynamics/java-agent:latest
+        resources: 
+          requests: 
+            cpu: "100m" 
+            memory: "256Mi" 
+          limits: 
+            cpu: "250m" 
+            memory: "512Mi"
+        volumeMounts:
+          - name: appd-agent-vol
+            mountPath: /opt/appdynamics
+
+      volumes:
+      - name: appd-agent-vol
+        emptyDir: {}
 
