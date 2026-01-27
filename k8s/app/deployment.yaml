@@ -75,6 +75,10 @@ spec:
           - name: APPDYNAMICS_AGENT_TIER_NAME
             value: "API"
 
+          - name: APPDYNAMICS_CONTROLLER_SSL_ENABLED
+            value: "true"
+
+
           - name: APPDYNAMICS_AGENT_NODE_NAME
             valueFrom:
               fieldRef:
@@ -90,8 +94,9 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - >
-            cp -R /opt/appdynamics/* /shared/appdynamics/ &&
+            cp -R /opt/appdynamics/* /opt/appdynamics/ || true;
             sleep infinity
+
         resources:
           requests:
             cpu: "100m"
@@ -101,7 +106,7 @@ spec:
             memory: "512Mi"
         volumeMounts:
           - name: appd-agent-vol
-            mountPath: /shared/appdynamics
+            mountPath: /opt/appdynamics
 
 
       volumes:
