@@ -81,7 +81,6 @@ spec:
                 name: appdynamics-secret
                 key: controller-ssl-enabled
 
-
           - name: APPDYNAMICS_AGENT_NODE_NAME
             valueFrom:
               fieldRef:
