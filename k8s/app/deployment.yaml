@@ -63,7 +63,7 @@ spec:
                 name: appdynamics-secret
                 key: account-name
 
-          - name: APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
+          - name: APPDYNAMICS_AGENT_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: appdynamics-secret
