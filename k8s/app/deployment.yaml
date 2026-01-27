@@ -86,16 +86,22 @@ spec:
 
       - name: appd-agent
         image: appdynamics/java-agent:latest
-        resources: 
-          requests: 
-            cpu: "100m" 
-            memory: "256Mi" 
-          limits: 
-            cpu: "250m" 
+        command: ["/bin/sh", "-c"]
+        args:
+          - >
+            cp -R /opt/appdynamics/* /shared/appdynamics/ &&
+            sleep infinity
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "250m"
             memory: "512Mi"
         volumeMounts:
           - name: appd-agent-vol
-            mountPath: /opt/appdynamics
+            mountPath: /shared/appdynamics
+
 
       volumes:
       - name: appd-agent-vol
