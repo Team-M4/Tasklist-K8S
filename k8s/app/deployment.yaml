@@ -15,6 +15,9 @@ spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
+      # ---------------------------
+      # Main application container
+      # ---------------------------
       - name: tasklist
         image: ghcr.io/team-m4/tasklist-app:latest
         ports:
@@ -40,10 +43,9 @@ spec:
                 name: postgres-secret
                 key: POSTGRES_PASSWORD
 
-
+          # Java agent
           - name: JAVA_TOOL_OPTIONS
-            value: "-javaagent:/opt/appdynamics/javaagent.jar"
-
+            value: "-javaagent:/shared/appdynamics/javaagent.jar"
 
           - name: APPDYNAMICS_CONTROLLER_HOST_NAME
             valueFrom:
@@ -86,17 +88,19 @@ spec:
               fieldRef:
                 fieldPath: metadata.name
 
-        
         volumeMounts:
           - name: appd-agent-vol
-            mountPath: /opt/appdynamics
+            mountPath: /shared/appdynamics
 
+      # ---------------------------
+      # AppDynamics agent container
+      # ---------------------------
       - name: appd-agent
         image: appdynamics/java-agent:latest
         command: ["/bin/sh", "-c"]
         args:
           - >
-            cp -R /opt/appdynamics/* /opt/appdynamics/ &&
+            cp -R /opt/appdynamics/* /shared/appdynamics &&
             sleep infinity
         resources:
           requests:
@@ -107,10 +111,11 @@ spec:
             memory: "512Mi"
         volumeMounts:
           - name: appd-agent-vol
-            mountPath: /opt/appdynamics
+            mountPath: /shared/appdynamics
 
-
+      # ---------------------------
+      # Shared volume for the agent
+      # ---------------------------
       volumes:
-      - name: appd-agent-vol
-        emptyDir: {}
-
+        - name: appd-agent-vol
+          emptyDir: {}
