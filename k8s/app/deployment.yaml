@@ -94,9 +94,8 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - >
-            cp -R /opt/appdynamics/* /opt/appdynamics/ || true;
+            cp -R /opt/appdynamics/* /shared/appdynamics/ &&
             sleep infinity
-
         resources:
           requests:
             cpu: "100m"
@@ -106,7 +105,7 @@ spec:
             memory: "512Mi"
         volumeMounts:
           - name: appd-agent-vol
-            mountPath: /opt/appdynamics
+            mountPath: /shared/appdynamics
 
 
       volumes:
