@@ -75,8 +75,8 @@ spec:
           - name: APPDYNAMICS_AGENT_TIER_NAME
             value: "API"
 
-          - name: APPDYNAMICS_CONTROLLER_SSL_ENABLED
-            value: "true"
+          # - name: APPDYNAMICS_CONTROLLER_SSL_ENABLED
+          #   value: "true"
 
 
           - name: APPDYNAMICS_AGENT_NODE_NAME
