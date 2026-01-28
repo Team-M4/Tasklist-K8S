@@ -15,6 +15,7 @@ spec:
       imagePullSecrets:
         - name: ghcr-secret
 
+      # InitContainer: copies agent files before app starts
       initContainers:
       - name: appd-agent-init
         image: appdynamics/java-agent:latest
@@ -30,27 +31,10 @@ spec:
         volumeMounts:
           - name: appd-agent-vol
             mountPath: /shared/appdynamics
-      volumes:
-        - name: appd-agent-conf
-          configMap:
-            name: appd-controller-info
 
-
-  volumeMounts:
-    - name: appd-agent-conf
-      mountPath: /shared/appdynamics/conf/controller-info.xml
-      subPath: controller-info.xml
-
-            
       containers:
       - name: tasklist
         image: ghcr.io/team-m4/tasklist-app:latest
-
-        volumeMounts:
-          - name: appd-agent-conf
-            mountPath: /shared/appdynamics/conf/controller-info.xml
-            subPath: controller-info.xml
-
         ports:
           - containerPort: 8080
         resources:
@@ -74,45 +58,44 @@ spec:
                 name: postgres-secret
                 key: POSTGRES_PASSWORD
 
+          # AppDynamics agent injection
           - name: JAVA_TOOL_OPTIONS
             value: "-javaagent:/shared/appdynamics/javaagent.jar"
 
+          # Controller connection details
           - name: APPDYNAMICS_CONTROLLER_HOST_NAME
             valueFrom:
               secretKeyRef:
                 name: appdynamics-secret
                 key: controller-host
-
           - name: APPDYNAMICS_CONTROLLER_PORT
             valueFrom:
               secretKeyRef:
                 name: appdynamics-secret
                 key: controller-port
-
-          - name: APPDYNAMICS_AGENT_ACCOUNT_NAME
-            valueFrom:
-              secretKeyRef:
-                name: appdynamics-secret
-                key: account-name
-
-          - name: APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: appdynamics-secret
-                key: account-access-key
-
-          - name: APPDYNAMICS_AGENT_APPLICATION_NAME
-            value: "TasklistApp"
-
-          - name: APPDYNAMICS_AGENT_TIER_NAME
-            value: "API"
-
           - name: APPDYNAMICS_CONTROLLER_SSL_ENABLED
             valueFrom:
               secretKeyRef:
                 name: appdynamics-secret
                 key: controller-ssl-enabled
 
+          # Account credentials
+          - name: APPDYNAMICS_AGENT_ACCOUNT_NAME
+            valueFrom:
+              secretKeyRef:
+                name: appdynamics-secret
+                key: account-name
+          - name: APPDYNAMICS_AGENT_ACCOUNT_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: appdynamics-secret
+                key: account-access-key
+
+          # Application hierarchy
+          - name: APPDYNAMICS_AGENT_APPLICATION_NAME
+            value: "TasklistApp"
+          - name: APPDYNAMICS_AGENT_TIER_NAME
+            value: "API"
           - name: APPDYNAMICS_AGENT_NODE_NAME
             valueFrom:
               fieldRef:
@@ -121,25 +104,13 @@ spec:
         volumeMounts:
           - name: appd-agent-vol
             mountPath: /shared/appdynamics
-
-      - name: appd-agent
-        image: appdynamics/java-agent:latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - >
-            cp -R /opt/appdynamics/* /shared/appdynamics &&
-            sleep infinity
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "250m"
-            memory: "512Mi"
-        volumeMounts:
-          - name: appd-agent-vol
-            mountPath: /shared/appdynamics
+          - name: appd-agent-conf
+            mountPath: /shared/appdynamics/conf/controller-info.xml
+            subPath: controller-info.xml
 
       volumes:
-      - name: appd-agent-vol
-        emptyDir: {}
+        - name: appd-agent-vol
+          emptyDir: {}
+        - name: appd-agent-conf
+          configMap:
+            name: appd-controller-info
