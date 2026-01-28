@@ -17,6 +17,17 @@ spec:
       containers:
       - name: tasklist
         image: ghcr.io/team-m4/tasklist-app:latest
+
+      initContainers:
+      - name: appd-agent-init
+        image: appdynamics/java-agent:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - cp -R /opt/appdynamics/* /shared/appdynamics
+        volumeMounts:
+          - name: appd-agent-vol
+            mountPath: /shared/appdynamics
+
         ports:
           - containerPort: 8080
         resources:
