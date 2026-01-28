@@ -104,13 +104,7 @@ spec:
         volumeMounts:
           - name: appd-agent-vol
             mountPath: /shared/appdynamics
-          - name: appd-agent-conf
-            mountPath: /shared/appdynamics/conf/controller-info.xml
-            subPath: controller-info.xml
 
       volumes:
         - name: appd-agent-vol
           emptyDir: {}
-        - name: appd-agent-conf
-          configMap:
-            name: appd-controller-info
