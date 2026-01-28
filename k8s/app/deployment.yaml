@@ -14,19 +14,42 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-secret
-      containers:
-      - name: tasklist
-        image: ghcr.io/team-m4/tasklist-app:latest
 
       initContainers:
       - name: appd-agent-init
         image: appdynamics/java-agent:latest
         command: ["/bin/sh", "-c"]
         args:
-          - cp -R /opt/appdynamics/* /shared/appdynamics
+          - |
+            if [ -d /opt/appdynamics ]; then
+              cp -R /opt/appdynamics/* /shared/appdynamics/;
+            else
+              echo "AppDynamics agent directory not found!";
+              exit 1;
+            fi
         volumeMounts:
           - name: appd-agent-vol
             mountPath: /shared/appdynamics
+      volumes:
+        - name: appd-agent-conf
+          configMap:
+            name: appd-controller-info
+
+
+  volumeMounts:
+    - name: appd-agent-conf
+      mountPath: /shared/appdynamics/conf/controller-info.xml
+      subPath: controller-info.xml
+
+            
+      containers:
+      - name: tasklist
+        image: ghcr.io/team-m4/tasklist-app:latest
+
+        volumeMounts:
+          - name: appd-agent-conf
+            mountPath: /shared/appdynamics/conf/controller-info.xml
+            subPath: controller-info.xml
 
         ports:
           - containerPort: 8080
